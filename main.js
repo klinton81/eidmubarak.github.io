@@ -3,6 +3,7 @@ const imageOne = document.querySelector(".image-1");
 const imageTwo = document.querySelector(".image-2");
 const btnYes = document.querySelector(".btn-yes");
 const btnNo = document.querySelector(".btn-no");
+const clkbtn =  document.querySelector(".clk");
 
 function getRandomNumber(min, max) {
   // Calculate the random number between min and max (inclusive)
@@ -10,6 +11,18 @@ function getRandomNumber(min, max) {
 
   return randomNumber;
 }
+
+document.addEventListener("DOMContentLoaded", function() {
+  document.getElementById("clkButton").addEventListener("click", function() {
+      document.getElementById("buttonLink").classList.add("fade-out");
+      setTimeout(function() {
+          window.location.href = document.getElementById("buttonLink").getAttribute("href");
+      }, 1000); // Adjust the duration of the animation (in milliseconds)
+  });
+});
+
+
+
 
 btnNo.addEventListener("mouseover", (event) => {
   const containerHeight = container.getBoundingClientRect().height;
@@ -38,3 +51,6 @@ btnYes.addEventListener("click", (e) => {
   imageOne.classList.add("hide");
   imageTwo.classList.remove("hide");
 });
+
+
+
