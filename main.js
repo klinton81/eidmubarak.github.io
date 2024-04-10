@@ -1,56 +1,74 @@
 const container = document.getElementById("container");
 const imageOne = document.querySelector(".image-1");
 const imageTwo = document.querySelector(".image-2");
+const imageThree = document.querySelector( ".image-3" );
 const btnYes = document.querySelector(".btn-yes");
 const btnNo = document.querySelector(".btn-no");
+const btnRe = document.querySelector(".btn-re");
 const clkbtn =  document.querySelector(".clk");
+const Swal = window.Swal;
 
-function getRandomNumber(min, max) {
-  // Calculate the random number between min and max (inclusive)
-  const randomNumber = Math.floor(Math.random() * (max - min + 1)) + min;
 
-  return randomNumber;
+
+
+
+
+// Function to display the first message
+function showMessage1() {
+    btnYes.classList.add('hide');
+    btnNo.classList.add("hide");
+    imageOne.classList.add("hide");
+    imageTwo.classList.remove("hide");
 }
 
-document.addEventListener("DOMContentLoaded", function() {
-  document.getElementById("clkButton").addEventListener("click", function() {
-      document.getElementById("buttonLink").classList.add("fade-out");
-      setTimeout(function() {
-          window.location.href = document.getElementById("buttonLink").getAttribute("href");
-      }, 1000); // Adjust the duration of the animation (in milliseconds)
-  });
+// Function to display the second message after 15 seconds
+function showMessage2() {
+  setTimeout(function() {
+    Swal.fire({
+      title: "Yea!!🥳 that's my Baby!!🌺",
+      text: "I will come and  pick you up in 10 minutes,Make sure to be ready on time my love🥺💖",
+      icon: "success",
+      showCancelButton: false,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Ok Darling!!!"
+    }).then((result) => {
+      if (result.isConfirmed) {
+        Swal.fire({
+          title: "Thank YOU !❤️",
+          text: "See You Soon My   Love!😘" ,
+          icon: "success"
+        });
+      }
+    });;
+  }, 2000); // 15 seconds = 15,000 milliseconds
+}
+
+// Attaching both functions to the click event of the button
+btnYes.addEventListener("click", function() {
+  showMessage1(); // Display the first message
+  showMessage2(); // Display the second message after 15 seconds
 });
 
 
 
 
-btnNo.addEventListener("mouseover", (event) => {
-  const containerHeight = container.getBoundingClientRect().height;
-  const containerWidth = container.getBoundingClientRect().width;
-  const btnHeight = btnNo.getBoundingClientRect().height;
-  const btnWidth = btnNo.getBoundingClientRect().width;
-  const btnTop = btnNo.getBoundingClientRect().top;
-  const btnLeft = btnNo.getBoundingClientRect().left;
-
-  let newTop = btnTop;
-  let newLeft = btnLeft;
-  while (Math.abs(newTop - btnTop) < containerHeight / 3) {
-    newTop = getRandomNumber(0, containerHeight - btnHeight);
-  }
-
-  while (Math.abs(newLeft - btnLeft) < containerWidth / 3) {
-    newLeft = getRandomNumber(0, containerWidth - btnWidth);
-  }
-
-  btnNo.style.top = Math.floor(newTop) + "px";
-  btnNo.style.left = Math.floor(newLeft) + "px";
-});
-
-btnYes.addEventListener("click", (e) => {
-  btnNo.classList.add("hide");
+btnNo.addEventListener("click", (e) => {
+  btnNo.classList.remove("hide");
+  btnYes.classList.add("hide");
   imageOne.classList.add("hide");
-  imageTwo.classList.remove("hide");
+  imageThree.classList.remove("hide");
+  btnRe.style.visibility = 'visible';
 });
+
+btnRe.addEventListener('click', (e)=>{ 
+  btnNo.classList.remove("hide");
+  btnYes.classList.remove("hide");
+  imageOne.classList.remove("hide");
+  btnRe.style.visibility='hidden' ; 
+  window.location.reload(true);
+});
+
 
 
 
