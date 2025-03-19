@@ -1,0 +1,394 @@
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Order Page</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    <style>
+        #subTabs {
+            display: none;
+        }
+        #notification {
+            display: none;
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background-color: #38a169;
+            color: white;
+            padding: 16px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            z-index: 1000;
+        }
+        #errorNotification {
+            display: none;
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background-color: #e53e3e;
+            color: white;
+            padding: 16px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            z-index: 1000;
+        }
+        #orderList, #orderForm, #mainContent, #adminPage, #userPage {
+            display: none;
+        }
+        footer {
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+        }
+    </style>
+</head>
+<body class="bg-white text-black">
+    <header class="bg-gray-800 text-white p-4 text-center">
+        <h1 class="text-xl">Tecno/Infinix Permanent MDM Remove</h1>
+    </header>
+    <div class="flex" id="mainContent">
+        <aside class="w-1/4 bg-gray-100 p-4" id="subTabs">
+            <h2 class="text-lg font-bold mb-4">Sub-Tabs</h2>
+            <ul>
+                <li class="mb-2"><a href="#" class="text-blue-500 hover:text-blue-700" onclick="showOrderForm()">Order Form</a></li>
+                <li class="mb-2"><a href="#" class="text-blue-500 hover:text-blue-700" onclick="showOrderList()">Order List</a></li>
+                <li class="mb-2"><a href="#" class="text-blue-500 hover:text-blue-700" onclick="showAdminPage()">Admin Page</a></li>
+                <li class="mb-2"><a href="#" class="text-blue-500 hover:text-blue-700" onclick="showUserPage()">User Page</a></li>
+                <li class="mb-2"><a href="#" class="text-gray-500">Coming Soon</a></li>
+            </ul>
+        </aside>
+        <main class="w-full p-4">
+            <button class="bg-blue-500 text-white p-2 rounded hover:bg-blue-700 mb-4" onclick="toggleSubTabs()">
+                <i class="fas fa-bars"></i>
+            </button>
+            <div id="orderForm">
+                <h2 class="text-lg font-bold mb-4">TECNO/INFINIX MDM PERMANENT REMOVE</h2>
+                <form id="orderFormElement" onsubmit="return validateForm()">
+                    <div class="mb-4">
+                        <label for="imei" class="block text-gray-700">IMEI</label>
+                        <input type="text" id="imei" class="w-full border border-gray-300 p-2" maxlength="15" oninput="validateIMEI()" pattern="\d*">
+                    </div>
+                    <div class="mb-4">
+                        <label for="photo" class="block text-gray-700">PHOTO</label>
+                        <input type="file" id="photo" class="w-full border border-gray-300 p-2" accept="image/*">
+                    </div>
+                    <div class="mb-4">
+                        <label for="info" class="block text-gray-700">Info</label>
+                        <textarea id="info" class="w-full border border-gray-300 p-2"></textarea>
+                    </div>
+                    <div class="mb-4">
+                        <label for="payment" class="block text-gray-700">Payment Option</label>
+                        <select id="payment" class="w-full border border-gray-300 p-2">
+                            <option value="">Select an option</option>
+                            <option>Option 1</option>
+                            <option>Option 2</option>
+                            <option>Option 3</option>
+                        </select>
+                    </div>
+                    <div class="mb-4">
+                        <label class="block text-gray-700">Order Instruction</label>
+                        <p class="border border-gray-300 p-2">Please fill in the IMEI number, upload a photo, provide additional information, and select a payment option. Then click "Place Order" to complete your order.</p>
+                    </div>
+                    <button type="submit" class="bg-blue-500 text-white p-2 rounded hover:bg-blue-700">Place Order</button>
+                </form>
+            </div>
+            <div id="orderList">
+                <h2 class="text-lg font-bold mb-4">Order List</h2>
+                <table class="w-full border-collapse border border-gray-300">
+                    <thead>
+                        <tr>
+                            <th class="border border-gray-300 p-2">IMEI</th>
+                            <th class="border border-gray-300 p-2">Status</th>
+                            <th class="border border-gray-300 p-2">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="orderTableBody">
+                        <!-- Orders will be dynamically added here -->
+                    </tbody>
+                </table>
+            </div>
+            <div id="adminPage">
+                <h2 class="text-lg font-bold mb-4">Admin Page</h2>
+                <p>Welcome to the Admin Page. Here you can manage orders and users.</p>
+                <!-- Add admin functionalities here -->
+            </div>
+            <div id="userPage">
+                <h2 class="text-lg font-bold mb-4">User Page</h2>
+                <p>Welcome to the User Page. Here you can view your orders and profile.</p>
+                <!-- Add user functionalities here -->
+            </div>
+        </main>
+    </div>
+    <footer class="bg-gray-800 text-white p-4 text-center">
+        <p>Information and Contact of the Web Owner</p>
+    </footer>
+
+    <div id="notification">
+        <i class="fas fa-check-circle"></i> Order placed successfully!
+    </div>
+
+    <div id="errorNotification">
+        <i class="fas fa-times-circle"></i> Failed to send order information to Telegram.
+    </div>
+
+    <div id="authModal" class="fixed inset-0 bg-gray-800 bg-opacity-75 flex items-center justify-center">
+        <div class="bg-white p-8 rounded-lg shadow-lg w-1/3">
+            <h2 class="text-xl font-bold mb-4" id="authModalTitle">Sign In</h2>
+            <form id="authForm" onsubmit="return handleAuth()">
+                <div class="mb-4">
+                    <label for="username" class="block text-gray-700">Username</label>
+                    <input type="text" id="username" class="w-full border border-gray-300 p-2">
+                </div>
+                <div class="mb-4">
+                    <label for="password" class="block text-gray-700">Password</label>
+                    <input type="password" id="password" class="w-full border border-gray-300 p-2">
+                </div>
+                <button type="submit" class="bg-blue-500 text-white p-2 rounded hover:bg-blue-700">Submit</button>
+                <button type="button" class="bg-gray-500 text-white p-2 rounded hover:bg-gray-700 ml-2" onclick="showSignUp()">Sign Up</button>
+            </form>
+        </div>
+    </div>
+
+    <div id="signUpModal" class="fixed inset-0 bg-gray-800 bg-opacity-75 flex items-center justify-center" style="display: none;">
+        <div class="bg-white p-8 rounded-lg shadow-lg w-1/3">
+            <h2 class="text-xl font-bold mb-4" id="signUpModalTitle">Sign Up</h2>
+            <form id="signUpForm" onsubmit="return handleSignUp()">
+                <div class="mb-4">
+                    <label for="signUpUsername" class="block text-gray-700">Username</label>
+                    <input type="text" id="signUpUsername" class="w-full border border-gray-300 p-2">
+                </div>
+                <div class="mb-4">
+                    <label for="signUpPassword" class="block text-gray-700">Password</label>
+                    <input type="password" id="signUpPassword" class="w-full border border-gray-300 p-2">
+                </div>
+                <button type="submit" class="bg-blue-500 text-white p-2 rounded hover:bg-blue-700">Submit</button>
+                <button type="button" class="bg-gray-500 text-white p-2 rounded hover:bg-gray-700 ml-2" onclick="closeSignUpModal()">Cancel</button>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        const orders = [];
+        let isAuthenticated = false;
+        const users = {};
+
+        function toggleSubTabs() {
+            const subTabs = document.getElementById('subTabs');
+            if (subTabs.style.display === 'none') {
+                subTabs.style.display = 'block';
+            } else {
+                subTabs.style.display = 'none';
+            }
+        }
+
+        function showOrderForm() {
+            if (!isAuthenticated) {
+                showAuthModal('Sign In');
+                return;
+            }
+            document.getElementById('orderForm').style.display = 'block';
+            document.getElementById('orderList').style.display = 'none';
+            document.getElementById('adminPage').style.display = 'none';
+            document.getElementById('userPage').style.display = 'none';
+        }
+
+        function showOrderList() {
+            if (!isAuthenticated) {
+                showAuthModal('Sign In');
+                return;
+            }
+            document.getElementById('orderForm').style.display = 'none';
+            document.getElementById('orderList').style.display = 'block';
+            document.getElementById('adminPage').style.display = 'none';
+            document.getElementById('userPage').style.display = 'none';
+            renderOrderList();
+        }
+
+        function showAdminPage() {
+            if (!isAuthenticated) {
+                showAuthModal('Sign In');
+                return;
+            }
+            document.getElementById('orderForm').style.display = 'none';
+            document.getElementById('orderList').style.display = 'none';
+            document.getElementById('adminPage').style.display = 'block';
+            document.getElementById('userPage').style.display = 'none';
+        }
+
+        function showUserPage() {
+            if (!isAuthenticated) {
+                showAuthModal('Sign In');
+                return;
+            }
+            document.getElementById('orderForm').style.display = 'none';
+            document.getElementById('orderList').style.display = 'none';
+            document.getElementById('adminPage').style.display = 'none';
+            document.getElementById('userPage').style.display = 'block';
+        }
+
+        function showNotification() {
+            const notification = document.getElementById('notification');
+            notification.style.display = 'block';
+            setTimeout(() => {
+                notification.style.display = 'none';
+            }, 3000);
+        }
+
+        function showErrorNotification(message) {
+            const errorNotification = document.getElementById('errorNotification');
+            errorNotification.innerHTML = `<i class="fas fa-times-circle"></i> ${message}`;
+            errorNotification.style.display = 'block';
+            setTimeout(() => {
+                errorNotification.style.display = 'none';
+            }, 3000);
+        }
+
+        function validateIMEI() {
+            const imeiInput = document.getElementById('imei');
+            imeiInput.value = imeiInput.value.replace(/\D/g, '');
+            if (imeiInput.value.length === 14) {
+                imeiInput.value += calculateCheckDigit(imeiInput.value);
+            }
+        }
+
+        function calculateCheckDigit(imei) {
+            let sum = 0;
+            for (let i = 0; i < imei.length; i++) {
+                let digit = parseInt(imei.charAt(i));
+                if (i % 2 === 1) {
+                    digit *= 2;
+                }
+                sum += digit > 9 ? digit - 9 : digit;
+            }
+            return (10 - (sum % 10)) % 10;
+        }
+
+        function validateForm() {
+            const imei = document.getElementById('imei').value;
+            const photo = document.getElementById('photo').files[0];
+            const info = document.getElementById('info').value;
+            const payment = document.getElementById('payment').value;
+
+            if (imei.length !== 15) {
+                showErrorNotification('IMEI must be 15 digits long.');
+                return false;
+            }
+
+            if (!photo) {
+                showErrorNotification('Please upload a photo.');
+                return false;
+            }
+
+            if (!payment) {
+                showErrorNotification('Please select a payment option.');
+                return false;
+            }
+
+            placeOrder(imei, photo, info, payment);
+            return false;
+        }
+
+        function placeOrder(imei, photo, info, payment) {
+            const formData = new FormData();
+            formData.append('chat_id', '905314915');
+            formData.append('caption', `New Order:\nIMEI: ${imei}\nInfo: ${info}\nPayment Option: ${payment}`);
+            formData.append('photo', photo);
+
+            fetch('https://api.telegram.org/bot7903384632:AAHUVoRaysiQrEZdWvV9n4YA7j8gPipjmxU/sendPhoto', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.ok) {
+                    showNotification();
+                    addOrderToList(imei, 'In Process');
+                    document.getElementById('orderFormElement').reset();
+                } else {
+                    showErrorNotification(`Failed to send order information to Telegram: ${data.description}`);
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                showErrorNotification('Failed to send order information to Telegram.');
+            });
+        }
+
+        function addOrderToList(imei, status) {
+            orders.push({ imei, status });
+            renderOrderList();
+        }
+
+        function renderOrderList() {
+            const orderTableBody = document.getElementById('orderTableBody');
+            orderTableBody.innerHTML = '';
+            orders.forEach((order, index) => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td class="border border-gray-300 p-2">${order.imei}</td>
+                    <td class="border border-gray-300 p-2">${order.status}</td>
+                    <td class="border border-gray-300 p-2">
+                        <button class="bg-green-500 text-white p-1 rounded hover:bg-green-700" onclick="updateOrderStatus(${index}, 'Done')">Done</button>
+                        <button class="bg-red-500 text-white p-1 rounded hover:bg-red-700" onclick="updateOrderStatus(${index}, 'Rejected')">Rejected</button>
+                    </td>
+                `;
+                orderTableBody.appendChild(row);
+            });
+        }
+
+        function updateOrderStatus(index, status) {
+            orders[index].status = status;
+            renderOrderList();
+        }
+
+        function showAuthModal(title) {
+            document.getElementById('authModalTitle').innerText = title;
+            document.getElementById('authModal').style.display = 'flex';
+        }
+
+        function closeAuthModal() {
+            document.getElementById('authModal').style.display = 'none';
+        }
+
+        function showSignUp() {
+            document.getElementById('authModal').style.display = 'none';
+            document.getElementById('signUpModal').style.display = 'flex';
+        }
+
+        function closeSignUpModal() {
+            document.getElementById('signUpModal').style.display = 'none';
+        }
+
+        function handleAuth() {
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+
+            if (users[username] && users[username] === password) {
+                isAuthenticated = true;
+                closeAuthModal();
+                document.getElementById('mainContent').style.display = 'flex';
+            } else {
+                showErrorNotification('Invalid username or password.');
+            }
+
+            return false;
+        }
+
+        function handleSignUp() {
+            const username = document.getElementById('signUpUsername').value;
+            const password = document.getElementById('signUpPassword').value;
+
+            if (username && password) {
+                users[username] = password;
+                closeSignUpModal();
+                showAuthModal('Sign In');
+            } else {
+                showErrorNotification('Please fill in both fields.');
+            }
+
+            return false;
+        }
+    </script>
+</body>
+</html>
